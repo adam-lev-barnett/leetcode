@@ -1,41 +1,28 @@
 import java.util.Stack;
+import java.util.HashMap;
 
 class Solution {
-    
-    Stack<Character> stack = new Stack<>();
-    
     public boolean isValid(String s) {
-        if (s.isEmpty()) {
-            if (stack.isEmpty()) return true;
-            else return false;
+        HashMap<Character, Character> symbols = new HashMap<>();
+        symbols.put('{', '}');
+        symbols.put('[', ']');
+        symbols.put('(', ')');
 
+        Stack<Character> q = new Stack<>();
+        if (!symbols.containsKey(s.charAt(0))) return false;
+        q.push(s.charAt(0));
+
+        int i = 1;
+        while (i < s.length()) {
+            char curr = s.charAt(i);
+            if (symbols.containsKey(curr)) q.push(curr);
+            else {
+                if (q.isEmpty()) return false;
+                if (symbols.get(q.pop()) != curr) return false;
+            }
+            i++;
         }
-
-        char bracket = s.charAt(0);
-
-        if (bracket == '(' || bracket == '[' || bracket == '{') {
-            if (s.length() == 1) return false;
-            stack.push(bracket);
+        if (q.isEmpty()) return true;
+        return false;
         }
-
-        else if (bracket == ')') {
-            if (stack.isEmpty()) return false;
-            if (stack.pop() != '(') return false;
-
-        }
-
-        else if (bracket == ']') {
-            if (stack.isEmpty()) return false;
-            if (stack.pop() != '[') return false;
-        }
-
-        else if (bracket == '}') {
-            if (stack.isEmpty()) return false;
-            if (stack.pop() != '{') return false;
-        }
-        
-        if (!s.isEmpty()) return isValid(s.substring(1));
-        
-        return true;
     }
-}
